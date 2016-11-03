@@ -8,7 +8,7 @@ var employeeData = [
     {name:"Shana", title:"manager", salary:105000},
 ];
 
-// Simple ListItem component for showing an <li>
+// Simple Employee component for showing an <td>
 var Employee = React.createClass({
     render:function() {
         return(<tr className={this.props.title}>
@@ -51,15 +51,43 @@ var EmployeeSearch = React.createClass({
         return({searchString:''});
     },
     // Add a filter funciton
+    filter: function(event) {
+      var value = event.target.value; //get event value (employee you are searching)
+      this.setState({searchString:value}); //set state to event value
+    }
 
     render:function() {
         var employees = this.props.data;
 
         // Use this.state.searchString to filter down the `employees` array
 
+        //my version
+        // employees.filter(function() {
+        //     for (employee in employees){
+        //         if (employee == this.state.searchString) {
+        //           return employee;
+        //         }
+        //     }
+        // }
+        //complete version
+        searchString = this.state.searchString.trim().toLowerCase(); //case sensitivity
+        if(searchString.length > 0){
+           // We are searching. Filter the results.
+           employees = employees.filter(function(employee){ //only render searched employee in table
+               return employee.name.toLowerCase().match( searchString );
+           });
+        }
+
+        // //class version 1
+        // var employeess = this.props.data,filter(d) {
+        //     d.name.match(this.state.searchString)
+        // }.bind(this);
+        // //class version 2
+        // this.props.data,filter(d) => d.name.match(this.state.searchString).bind(this);
+
         return(
             <div>
-                <input placeholder="Search employees"/>
+                <input onChange={this.filter} placeholder="Search employees"/> //when state changes, rerender
                 <EmployeeTable data={employees}/>
             </div>
         )
